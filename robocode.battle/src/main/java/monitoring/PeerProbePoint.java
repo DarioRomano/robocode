@@ -60,7 +60,12 @@ public class PeerProbePoint extends Thread {
 
 	public void setEnergy(double energy) {
 		this.energy.data.add(energy);
-		alive= (energy==0) ? false:true;
+		if(energy==0) {
+			if(alive)
+				sendData(name+"_died");
+			alive=false;
+			
+		}
 	}
 
 	public void setGunHeat(double gunHeat) {

@@ -507,9 +507,6 @@ public final class Battle extends BaseBattle {
 			currPoint.setVelocity(n.getVelocity());
 			currPoint.setxPosition(n.getX());
 			currPoint.setyPosition(n.getY());
-			if(n.isDead()) {
-				n.energy=120.0;
-			}
 		}
 		
 		int mod=(this.getTPS()==0) ? 1:this.getTPS();
