@@ -3,7 +3,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * https://robocode.sourceforge.io/license/epl-v10.html
+ * http://robocode.sourceforge.net/license/epl-v10.html
  */
 package net.sf.robocode.battle;
 
@@ -35,6 +35,18 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import at.jku.mevss.eventdistributor.core.transmit.TransmittableEventDataObject;
+import at.jku.mevss.eventdistributor.core.transmit.TransmittableEventObject;
+import at.jku.mevss.eventdistributor.core.transmit.TransmittableObjectFactory;
+import at.jku.mevss.eventpublisher.core.api.IProbePoint;
+import at.jku.mevss.eventpublisher.core.api.ProbeData;
+import at.jku.mevss.eventpublisher.core.api.ProbeData.ProbeDataItem;
+import at.jku.mevss.eventpublisher.core.service.PublishService;
+import at.jku.mevss.util.utils.PreciseTimestamp;
+import monitoring.PeerProbePoint;
+import monitoring.TurnProbePoint;
+
 
 
 /**
@@ -77,6 +89,11 @@ public final class Battle extends BaseBattle {
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+	
+	//probe for monitoring the battle with ReMinds
+	private TurnProbePoint probePoint;
+	private IProbePoint iprobePoint;
+	private Map<Integer,PeerProbePoint> robotProbes;
 
 	// Initial robot setups (if any)
 	private RobotSetup[] initialRobotSetups;
@@ -89,13 +106,23 @@ public final class Battle extends BaseBattle {
 	}
 
 	void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProps, boolean paused) {
+
+		robotProbes=new HashMap<Integer,PeerProbePoint>();
 		isPaused = paused;
 		battleRules = HiddenAccess.createRules(battleProps.getBattlefieldWidth(), battleProps.getBattlefieldHeight(),
 				battleProps.getNumRounds(), battleProps.getGunCoolingRate(), battleProps.getInactivityTime(),
 				battleProps.getHideEnemyNames(), battleProps.getSentryBorderSize());
 		robotsCount = battlingRobotsList.length;
 		computeInitialPositions(battleProps.getInitialPositions());
-		createPeers(battlingRobotsList);
+		createPeers(battlingRobotsList);	
+		try {
+			iprobePoint = PublishService.getInstance().createProbePoint("Battle", "Robocode", "simulation.robocode.battle",
+					Battle.class.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		probePoint=new TurnProbePoint(iprobePoint);
+		probePoint.start();
 	}
 
 	private void createPeers(RobotSpecification[] battlingRobotsList) {
@@ -215,6 +242,20 @@ public final class Battle extends BaseBattle {
 				contestants.add(robotPeer);
 			}
 		}
+		
+		for(RobotPeer e:robots) {
+			try {
+				robotProbes.put((Integer)e.getId(),new PeerProbePoint(e.getName(),
+						PublishService.getInstance().createProbePoint(e.getName(),
+						"simulation.robocode.robot", "simulation.robocode.robot",
+						PeerProbePoint.class.getName())));
+			} catch (Exception a) {
+				a.printStackTrace();
+			}
+		}
+		for(int i=0;i<robotProbes.size();i++) {
+			robotProbes.get(i).start();
+		}
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -313,6 +354,22 @@ public final class Battle extends BaseBattle {
 		if (nanoWait == 0) {
 			nanoWait = 1;
 		}
+		
+		TransmittableEventObject ob = TransmittableObjectFactory
+				.createEventObject(PreciseTimestamp.create(), "Battle_Initialized");
+		
+		ProbeData d = new ProbeData("BattleInitData");
+		d.addKeyValue("parallelOn", Boolean.toString(parallelOn));
+		d.addKeyValue("millisWait", Long.toString(millisWait));
+		d.addKeyValue("nanoWait", Long.toString(nanoWait));
+
+		for (ProbeDataItem item : d.getItems()) {
+			TransmittableEventDataObject data = TransmittableObjectFactory
+					.createEventData(item.getData(), item.getName());
+			ob.addData(data);
+		}
+
+		iprobePoint.sendData(ob);
 	}
 
 	@Override
@@ -327,6 +384,10 @@ public final class Battle extends BaseBattle {
 			robotPeer.cleanup();
 		}
 		hostManager.resetThreadManager();
+		
+//		TransmittableEventObject ob = TransmittableObjectFactory
+//				.createEventObject(PreciseTimestamp.create(), "Battle_Finalized");
+//		iprobePoint.sendData(ob);
 
 		super.finalizeBattle();
 	}
@@ -380,6 +441,10 @@ public final class Battle extends BaseBattle {
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
 			robotPeer.startRound(waitMillis, waitNanos);
 		}
+		
+		TransmittableEventObject ob = TransmittableObjectFactory
+				.createEventObject(PreciseTimestamp.create(), "Round_initialized");
+		iprobePoint.sendData(ob);
 
 		Logger.logMessage(""); // puts in a new-line in the log message
 
@@ -398,6 +463,9 @@ public final class Battle extends BaseBattle {
 		bullets.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
+		TransmittableEventObject ob = TransmittableObjectFactory
+				.createEventObject(PreciseTimestamp.create(), "Round_finalized");
+		iprobePoint.sendData(ob);
 	}
 
 	@Override
@@ -431,6 +499,30 @@ public final class Battle extends BaseBattle {
 
 		// Robot time!
 		wakeupRobots();
+		for(int i=0;i<robots.size();i++) {
+			RobotPeer n=robots.get(i);
+			PeerProbePoint currPoint=this.robotProbes.get(n.getId());
+			currPoint.setEnergy(n.getEnergy());
+			currPoint.setGunHeat(n.getGunHeat());
+			currPoint.setVelocity(n.getVelocity());
+			currPoint.setxPosition(n.getX());
+			currPoint.setyPosition(n.getY());
+		}
+		
+		int mod=(this.getTPS()==0) ? 1:this.getTPS();
+		if(this.getTotalTurns()%mod==0) {
+
+
+			probePoint.setBattleTime(this.currentTime);
+			probePoint.setRoundNumber(this.getRoundNum());
+			probePoint.setTPS(this.getTPS());
+			probePoint.setTotalTurns(this.totalTurns);
+			probePoint.setCurrentBulletsCount(this.bullets.size());
+			probePoint.sendData("TurnCalculated");
+			for(int i=0;i<robotProbes.size();i++) {
+				robotProbes.get(i).setTPS(getTPS());
+			}
+		}	
 	}
 
 	@Override

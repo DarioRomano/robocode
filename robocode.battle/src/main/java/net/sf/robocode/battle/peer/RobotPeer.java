@@ -63,6 +63,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author "BD123" (contributor)
  */
 public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
+	private static int count;
+	private int id;
 
 	public static final int
 			WIDTH = 36,
@@ -140,7 +142,9 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
-
+		id=RobotPeer.count;
+		RobotPeer.count=id+1;
+		
 		this.battle = battle;
 		this.robotSpecification = robotSpecification;
 
@@ -184,6 +188,10 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			battleText.append(s);
 			battleText.append("\n");
 		}
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	private void print(String s) {

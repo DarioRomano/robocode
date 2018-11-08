@@ -33,6 +33,9 @@ import robocode.control.events.IBattleListener;
 import java.io.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import monitoring.Probe;
+import monitoring.TurnProbePoint;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -70,6 +73,7 @@ public class BattleManager implements IBattleManager {
 		this.battleEventDispatcher = battleEventDispatcher;
 		Logger.setLogListener(battleEventDispatcher);
 		battleProperties = new BattleProperties(properties);
+
 	}
 
 	public synchronized void cleanup() {

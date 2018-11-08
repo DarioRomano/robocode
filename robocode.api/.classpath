@@ -22,5 +22,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/at.jku.ase.logging.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/at.jku.mevss.publisherAPI.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/at.jku.mevss.publisherIMPL.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/commons-cli-1.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/guava-15.0.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/json-20110217.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/mockito-all-1.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/NewRoboSpace/robocode/robocode.battle/lib/swt.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
