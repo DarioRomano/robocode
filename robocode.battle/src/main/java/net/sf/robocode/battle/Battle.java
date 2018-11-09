@@ -376,9 +376,6 @@ public final class Battle extends BaseBattle {
 	protected void finalizeBattle() {
 		eventDispatcher.onBattleFinished(new BattleFinishedEvent(isAborted()));
 		
-		for(int i =0;i<robotProbes.size();i++) {
-			robotProbes.get(i).stopThread();
-		}
 
 		if (!isAborted()) {
 			eventDispatcher.onBattleCompleted(new BattleCompletedEvent(battleRules, computeBattleResults()));
@@ -388,10 +385,13 @@ public final class Battle extends BaseBattle {
 			robotPeer.cleanup();
 		}
 		hostManager.resetThreadManager();
-		
+		for(int i =0;i<robotProbes.size();i++) {
+			robotProbes.get(i).stopThread();
+		}
 		TransmittableEventObject ob = TransmittableObjectFactory
 				.createEventObject(PreciseTimestamp.create(), "Battle_Finalized");
 		iprobePoint.sendData(ob);
+		
 
 		super.finalizeBattle();
 	}
@@ -511,6 +511,7 @@ public final class Battle extends BaseBattle {
 			currPoint.setVelocity(n.getVelocity());
 			currPoint.setxPosition(n.getX());
 			currPoint.setyPosition(n.getY());
+			currPoint.setHealth(n.isAlive());
 		}
 		
 		int mod=(getTPS()==0) ? 1:getTPS();
@@ -521,8 +522,13 @@ public final class Battle extends BaseBattle {
 			probePoint.setTotalTurns(this.totalTurns);
 			probePoint.setCurrentBulletsCount(this.bullets.size());
 			probePoint.sendData("TurnCalculated");
+			for(int i=0;i<robotProbes.size();i++) {
+				if(!robotProbes.get(i).isDead())
+				robotProbes.get(i).sendData("PeriodicData."+robotProbes.get(i).getRoboName());
+				
+			}
 		}	
-		for(int i=0;i<robotProbes.size();i++) {
+		for(int i=0;i<robotProbes.size();i++) {	
 			robotProbes.get(i).setTPS(getTPS());
 		}
 	}
