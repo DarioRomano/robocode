@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author "BD123" (contributor)
  */
 public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
-	private static int count;
+	public static int count;
 	private int id;
 
 	public static final int

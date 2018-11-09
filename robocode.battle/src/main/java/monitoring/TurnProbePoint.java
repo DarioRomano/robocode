@@ -74,6 +74,10 @@ public class TurnProbePoint extends Thread {
 	public void setBattleTime(int bTime) {
 		battleTime = bTime;
 	}
+	
+	public void stopThread() {
+		running=false;
+	}
 
 	/**
 	 * Sends the currently available data with the given name

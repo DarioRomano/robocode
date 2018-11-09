@@ -33,12 +33,11 @@ public class PeerProbePoint extends Thread {
 		private RobotDataClass<Double> yPosition;
 		
 		private boolean alive=true;
-		private boolean stopped=false;
+		private boolean disabled=false;
 		private IProbePoint probePoint;
 
 		// TODO continue here
 		public PeerProbePoint(String name,IProbePoint i) {
-			stopped=false;
 			probePoint=i;
 			this.name=name;
 			this.energy=new RobotDataClass<Double>();
@@ -47,20 +46,6 @@ public class PeerProbePoint extends Thread {
 			this.xPosition=new RobotDataClass<Double>();
 			this.yPosition=new RobotDataClass<Double>();
 		}
-
-	public void run() {
-		try {
-//			while (!stopped) {
-//				Thread.sleep(1000);
-//				if(alive) {
-//				sendData("PeriodicRobotData."+name);
-//				}
-//				
-//			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 	public String getRoboName() {
@@ -72,6 +57,10 @@ public class PeerProbePoint extends Thread {
 	}
 	public void setEnergy(double energy) {
 		this.energy.data.add(energy);
+		if(energy==0 && !disabled) {
+			disabled=true;
+			sendData(name+"_disabled");
+		}
 	}
 
 	public void setGunHeat(double gunHeat) {
@@ -93,9 +82,11 @@ public class PeerProbePoint extends Thread {
 	public void setTPS(int tps) {
 		this.TPS=tps;
 	}
-	
-	public void stopThread() {
-		stopped=true;
+
+	public void setHealth(boolean alive2) {	
+		if(!alive2 && alive)
+			sendData(name+"_died");
+		this.alive=alive2;
 	}
 
 	public void sendData(String eventType) {
@@ -182,11 +173,4 @@ public class PeerProbePoint extends Thread {
 				yPosition.maxDelta=Math.abs(curr-yPosition.data.peek());
 		}
 	}
-
-	public void setHealth(boolean alive2) {	
-		if(!alive2 && alive)
-			sendData(name+"_died");
-		this.alive=alive2;
-	}
-
 }

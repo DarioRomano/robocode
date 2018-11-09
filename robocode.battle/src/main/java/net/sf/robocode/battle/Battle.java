@@ -36,6 +36,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import at.jku.mevss.eventdistributor.core.DistributionException;
 import at.jku.mevss.eventdistributor.core.transmit.TransmittableEventDataObject;
 import at.jku.mevss.eventdistributor.core.transmit.TransmittableEventObject;
 import at.jku.mevss.eventdistributor.core.transmit.TransmittableObjectFactory;
@@ -253,9 +254,6 @@ public final class Battle extends BaseBattle {
 				a.printStackTrace();
 			}
 		}
-		for(int i=0;i<robotProbes.size();i++) {
-			robotProbes.get(i).start();
-		}
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -385,12 +383,22 @@ public final class Battle extends BaseBattle {
 			robotPeer.cleanup();
 		}
 		hostManager.resetThreadManager();
-		for(int i =0;i<robotProbes.size();i++) {
-			robotProbes.get(i).stopThread();
-		}
 		TransmittableEventObject ob = TransmittableObjectFactory
 				.createEventObject(PreciseTimestamp.create(), "Battle_Finalized");
 		iprobePoint.sendData(ob);
+		
+		probePoint.stopThread();
+		try {
+			PublishService.getInstance().terminateProbePoint("Battle", "Robocode");
+			for(int i=0;i<robotProbes.size();i++) {
+			PublishService.getInstance().terminateProbePoint(robotProbes.get(i).getRoboName(), "simulation.robocode.robot");	
+			}
+		} catch (DistributionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		RobotPeer.count=0;
+		
 		
 
 		super.finalizeBattle();
@@ -490,19 +498,7 @@ public final class Battle extends BaseBattle {
 		updateRobots();
 
 		handleDeadRobots();
-
-		if (isAborted() || oneTeamRemaining()) {
-			shutdownTurn();
-		}
-
-		inactiveTurnCount++;
-
-		computeActiveRobots();
-
-		publishStatuses();
-
-		// Robot time!
-		wakeupRobots();
+		
 		for(int i=0;i<robots.size();i++) {
 			RobotPeer n=robots.get(i);
 			PeerProbePoint currPoint=this.robotProbes.get(n.getId());
@@ -531,6 +527,20 @@ public final class Battle extends BaseBattle {
 		for(int i=0;i<robotProbes.size();i++) {	
 			robotProbes.get(i).setTPS(getTPS());
 		}
+
+		if (isAborted() || oneTeamRemaining()) {
+			shutdownTurn();
+		}
+
+		inactiveTurnCount++;
+
+		computeActiveRobots();
+
+		publishStatuses();
+
+		// Robot time!
+		wakeupRobots();
+		
 	}
 
 	@Override
