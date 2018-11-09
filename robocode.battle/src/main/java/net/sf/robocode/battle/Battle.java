@@ -375,6 +375,10 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void finalizeBattle() {
 		eventDispatcher.onBattleFinished(new BattleFinishedEvent(isAborted()));
+		
+		for(int i =0;i<robotProbes.size();i++) {
+			robotProbes.get(i).stopThread();
+		}
 
 		if (!isAborted()) {
 			eventDispatcher.onBattleCompleted(new BattleCompletedEvent(battleRules, computeBattleResults()));
@@ -509,20 +513,18 @@ public final class Battle extends BaseBattle {
 			currPoint.setyPosition(n.getY());
 		}
 		
-		int mod=(this.getTPS()==0) ? 1:this.getTPS();
+		int mod=(getTPS()==0) ? 1:getTPS();
 		if(this.getTotalTurns()%mod==0) {
-
-
 			probePoint.setBattleTime(this.currentTime);
 			probePoint.setRoundNumber(this.getRoundNum());
 			probePoint.setTPS(this.getTPS());
 			probePoint.setTotalTurns(this.totalTurns);
 			probePoint.setCurrentBulletsCount(this.bullets.size());
 			probePoint.sendData("TurnCalculated");
-			for(int i=0;i<robotProbes.size();i++) {
-				robotProbes.get(i).setTPS(getTPS());
-			}
 		}	
+		for(int i=0;i<robotProbes.size();i++) {
+			robotProbes.get(i).setTPS(getTPS());
+		}
 	}
 
 	@Override
