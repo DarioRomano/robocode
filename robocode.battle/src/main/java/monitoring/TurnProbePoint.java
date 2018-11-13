@@ -25,6 +25,7 @@ public class TurnProbePoint extends Thread {
 	private int lastTimeTurns;
 	private int roundNumber;
 	private int battleTime;
+	private boolean paused;
 
 	/**
 	 * 
@@ -39,6 +40,9 @@ public class TurnProbePoint extends Thread {
 	public void run() {
 		try {
 			while (running) {
+				while(paused) {
+					Thread.sleep(500);
+				}
 				Thread.sleep(1000);
 				sendData("TurnInformation");
 			}
@@ -73,6 +77,14 @@ public class TurnProbePoint extends Thread {
 
 	public void setBattleTime(int bTime) {
 		battleTime = bTime;
+	}
+	
+	public void setPaused(boolean pause) {
+		if(!paused && pause) {
+		sendData("Battle.paused");
+		}else if(paused && !pause) {
+		sendData("Battle.resumed");
+		}
 	}
 	
 	public void stopThread() {

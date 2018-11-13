@@ -107,12 +107,12 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public double energy;
 	private double velocity;
-	private double bodyHeading;
-	private double radarHeading;
-	private double gunHeading;
+	public double bodyHeading;
+	public double radarHeading;
+	public double gunHeading;
 	private double gunHeat;
-	private double x;
-	private double y;
+	public double x;
+	public double y;
 
 	private boolean scan;
 	private boolean turnedRadarWithGun; // last round

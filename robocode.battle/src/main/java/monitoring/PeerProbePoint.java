@@ -12,6 +12,7 @@ import at.jku.mevss.eventpublisher.core.api.ProbeData.ProbeDataItem;
 import at.jku.mevss.util.utils.PreciseTimestamp;
 
 public class PeerProbePoint extends Thread {
+	
 	private class RobotDataClass<T>{
 		private Queue<T> data;
 		private T dataMin;
@@ -59,7 +60,7 @@ public class PeerProbePoint extends Thread {
 		this.energy.data.add(energy);
 		if(energy==0 && !disabled) {
 			disabled=true;
-			sendData(name+"_disabled");
+			sendData("Robot.disabled");
 		}
 	}
 
@@ -84,8 +85,10 @@ public class PeerProbePoint extends Thread {
 	}
 
 	public void setHealth(boolean alive2) {	
-		if(!alive2 && alive)
-			sendData(name+"_died");
+		if(!alive2 && alive) {
+			this.alive=alive2;
+			sendData("Robot.died");
+		}
 		this.alive=alive2;
 	}
 
@@ -96,6 +99,7 @@ public class PeerProbePoint extends Thread {
 				eventType);
 
 		ProbeData d = new ProbeData("PeerData");
+		d.addKeyValue("Name", name);
 		d.addKeyValue("EnergyMin", energy.dataMin);
 		d.addKeyValue("EnergyAverage", energy.dataAverage);
 		d.addKeyValue("EnergyMax", energy.dataMax);

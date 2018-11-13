@@ -95,7 +95,9 @@ public final class Battle extends BaseBattle {
 	private TurnProbePoint probePoint;
 	private IProbePoint iprobePoint;
 	private Map<Integer,PeerProbePoint> robotProbes;
-
+	private final boolean ENABLE_RANDOM_TELEPORTATION=true;
+	private final double RANDOM_TELEPORTATION_CHANCE=0.002;
+	
 	// Initial robot setups (if any)
 	private RobotSetup[] initialRobotSetups;
 
@@ -248,7 +250,7 @@ public final class Battle extends BaseBattle {
 			try {
 				robotProbes.put((Integer)e.getId(),new PeerProbePoint(e.getName(),
 						PublishService.getInstance().createProbePoint(e.getName(),
-						"simulation.robocode.robot", "simulation.robocode.robot",
+						"simulation.robocode.robot", "simulation.robocode.robot@"+e.getName(),
 						PeerProbePoint.class.getName())));
 			} catch (Exception a) {
 				a.printStackTrace();
@@ -455,7 +457,7 @@ public final class Battle extends BaseBattle {
 		}
 		
 		TransmittableEventObject ob = TransmittableObjectFactory
-				.createEventObject(PreciseTimestamp.create(), "Round_initialized");
+				.createEventObject(PreciseTimestamp.create(), "Round.initialized");
 		iprobePoint.sendData(ob);
 
 		Logger.logMessage(""); // puts in a new-line in the log message
@@ -476,7 +478,7 @@ public final class Battle extends BaseBattle {
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 		TransmittableEventObject ob = TransmittableObjectFactory
-				.createEventObject(PreciseTimestamp.create(), "Round_finalized");
+				.createEventObject(PreciseTimestamp.create(), "Round.finalized");
 		iprobePoint.sendData(ob);
 	}
 
@@ -502,6 +504,12 @@ public final class Battle extends BaseBattle {
 		for(int i=0;i<robots.size();i++) {
 			RobotPeer n=robots.get(i);
 			PeerProbePoint currPoint=this.robotProbes.get(n.getId());
+			if(ENABLE_RANDOM_TELEPORTATION && n.isAlive()) {
+				if(Math.random()<=RANDOM_TELEPORTATION_CHANCE) {
+				n.x=Math.random()*this.battleRules.getBattlefieldWidth();
+				n.y=Math.random()*this.battleRules.getBattlefieldHeight();
+				}
+			}
 			currPoint.setEnergy(n.getEnergy());
 			currPoint.setGunHeat(n.getGunHeat());
 			currPoint.setVelocity(n.getVelocity());
@@ -511,7 +519,8 @@ public final class Battle extends BaseBattle {
 		}
 		
 		int mod=(getTPS()==0) ? 1:getTPS();
-		if(this.getTotalTurns()%mod==0) {
+		if(this.getTotalTurns()%mod==0 && !isAborted) {
+			probePoint.setPaused(isPaused);
 			probePoint.setBattleTime(this.currentTime);
 			probePoint.setRoundNumber(this.getRoundNum());
 			probePoint.setTPS(this.getTPS());
@@ -520,7 +529,7 @@ public final class Battle extends BaseBattle {
 			probePoint.sendData("TurnCalculated");
 			for(int i=0;i<robotProbes.size();i++) {
 				if(!robotProbes.get(i).isDead())
-				robotProbes.get(i).sendData("PeriodicData."+robotProbes.get(i).getRoboName());
+				robotProbes.get(i).sendData("RobotData");	//robotProbes.get(i).getRoboName());
 				
 			}
 		}	
