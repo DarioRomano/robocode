@@ -516,6 +516,9 @@ public final class Battle extends BaseBattle {
 			currPoint.setxPosition(n.getX());
 			currPoint.setyPosition(n.getY());
 			currPoint.setHealth(n.isAlive());
+			currPoint.setGunHeading(n.gunHeading);
+			currPoint.setRobotHeading(n.bodyHeading);
+			currPoint.setRadarheading(n.radarHeading);
 		}
 		
 		int mod=(getTPS()==0) ? 1:getTPS();

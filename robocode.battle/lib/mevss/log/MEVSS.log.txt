@@ -1,26 +1,14 @@
-2018-11-15 14:56:03,316 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'sampleex.MasterAndSlave' found
-2018-11-15 14:56:03,317 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'sampleex.Alien' found
-2018-11-15 14:56:03,317 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'sampleex.ProxyOfGreyEminence' found
-2018-11-15 14:56:03,317 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'sampleex.AlienComposition' found
-2018-11-15 14:56:03,318 INFO  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
-2018-11-15 14:56:03,319 INFO  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.service.PublishService.createProbePoint(PublishService.java:134)                   instantiating new probe point: 'Battle' @Robocode
-2018-11-15 14:56:03,319 INFO  [AWT-EventQueue-0] at.jku.mevss.eventdistributor.core.commandsocket.CommandSocketServer.prepare(CommandSocketServer.java:49)           Command Port set for 65004
-2018-11-15 14:56:03,320 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'Battle' found
-2018-11-15 14:56:03,321 INFO  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
-2018-11-15 14:56:03,322 WARN  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.getEventTypes(RegistryClient2.java:334)                   No event types for probe point 'Battle' found
-2018-11-15 14:56:03,323 INFO  [AWT-EventQueue-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
-2018-11-15 14:56:03,375 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: simulation.robocode.battle
-2018-11-15 14:56:03,380 WARN  [Battle Thread] at.jku.mevss.eventpublisher.core.util.JARPropertyLoader.load(JARPropertyLoader.java:43)                             Property file not found - using default configuration!
-2018-11-15 14:56:03,385 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.negotiator.NegotiatorClient.<clinit>(NegotiatorClient.java:55)                     Negotiator Client set for negotiation at  null on port 3333
-2018-11-15 14:56:03,389 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.negotiator.NegotiatorClient.runNegotiation(NegotiatorClient.java:111)              Negotiation complete - using M-SOCKET as publishing mode
-2018-11-15 14:56:03,390 WARN  [Battle Thread] at.jku.mevss.eventpublisher.core.util.JARPropertyLoader.load(JARPropertyLoader.java:43)                             Property file not found - using default configuration!
-2018-11-15 14:56:03,394 INFO  [Thread-9] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.init(MultiSocketTransmitThread.java:44)                    Socket Publisher set for publishing at null on port 3434
-2018-11-15 14:56:03,396 INFO  [Thread-9] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.doConnect(MultiSocketTransmitThread.java:58)               New Connection to Server established at port: null @ 3434
-2018-11-15 14:56:03,500 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: simulation.robocode.robot@sampleex.Alien
-2018-11-15 14:56:03,502 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.negotiator.NegotiatorClient.runNegotiation(NegotiatorClient.java:111)              Negotiation complete - using M-SOCKET as publishing mode
-2018-11-15 14:56:03,503 WARN  [Battle Thread] at.jku.mevss.eventpublisher.core.util.JARPropertyLoader.load(JARPropertyLoader.java:43)                             Property file not found - using default configuration!
-2018-11-15 14:56:03,508 INFO  [Thread-10] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.init(MultiSocketTransmitThread.java:44)                    Socket Publisher set for publishing at null on port 3434
-2018-11-15 14:56:03,509 INFO  [Thread-10] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.doConnect(MultiSocketTransmitThread.java:58)               New Connection to Server established at port: null @ 3434
-2018-11-15 14:56:03,512 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: simulation.robocode.robot@sampleex.AlienComposition
-2018-11-15 14:56:03,515 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: simulation.robocode.robot@sampleex.MasterAndSlave
-2018-11-15 14:56:03,519 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: simulation.robocode.robot@sampleex.ProxyOfGreyEminence
+2018-11-15 16:30:12,356 ERROR [Thread-10] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.run(MultiSocketTransmitThread.java:99)                     Connection reset by peer: socket write error
+java.net.SocketException: Connection reset by peer: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(Unknown Source)
+	at java.net.SocketOutputStream.write(Unknown Source)
+	at java.io.BufferedOutputStream.flushBuffer(Unknown Source)
+	at java.io.BufferedOutputStream.write(Unknown Source)
+	at java.io.ObjectOutputStream$BlockDataOutputStream.drain(Unknown Source)
+	at java.io.ObjectOutputStream$BlockDataOutputStream.flush(Unknown Source)
+	at java.io.ObjectOutputStream.flush(Unknown Source)
+	at java.io.ObjectOutputStream.close(Unknown Source)
+	at at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.run(MultiSocketTransmitThread.java:93)
+2018-11-15 16:30:13,356 ERROR [Battle Thread] at.jku.mevss.eventpublisher.core.negotiator.NegotiatorClient.runNegotiation(NegotiatorClient.java:120)              Cant connect to negotiation server @ null:3333 setting connection timeout to 100
+-----------------------------------------------------------------------

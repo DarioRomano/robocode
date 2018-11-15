@@ -54,6 +54,7 @@ public class PeerProbePoint extends Thread {
 		dataClasses.put("yPosition",new RobotDataClass<Double>());
 		dataClasses.put("robotHeading",new RobotDataClass<Double>());
 		dataClasses.put("gunHeading",new RobotDataClass<Double>());
+		dataClasses.put("radarHeading",new RobotDataClass<Double>());
 	}
 
 	public String getRoboName() {
@@ -70,6 +71,10 @@ public class PeerProbePoint extends Thread {
 	
 	public void setGunHeading(double gheading) {
 		dataClasses.get("gunHeading").add(gheading);
+	}
+
+	public void setRadarheading(double radarHeading) {
+		dataClasses.get("radarHeading").add(radarHeading);
 	}
 
 	public void setEnergy(double energy) {
@@ -180,4 +185,5 @@ public class PeerProbePoint extends Thread {
 		rdata.dataAverage = rdata.data.stream().mapToDouble(v -> v).average().getAsDouble();
 		rdata.maxDelta = getMaxDelta((List<Double>) rdata.data);
 	}
+
 }
