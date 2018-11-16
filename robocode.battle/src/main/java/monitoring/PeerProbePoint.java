@@ -158,13 +158,19 @@ public class PeerProbePoint extends Thread {
 		}
 	}
 
+	/**
+	 * 
+	 * @param l list with collected values
+	 * @return	the maximum change between 2 following values
+	 */
 	private double getMaxDelta(List l) {
+		//TODO check what happens with beginning values
 		if (!l.isEmpty()) {
 			double last = (double) l.get(0);
 			double maxDelta = 0;
 			for (int i = 0; i < l.size(); i++) {
-				if (Math.abs((double) l.get(i) - last) > maxDelta) {
-					maxDelta = Math.abs((double) l.get(i) - last);
+				if (Math.abs((double) l.get(i) - last) > Math.abs(maxDelta)) {
+					maxDelta = (double) l.get(i) - last;
 				}
 				last = (double) l.get(i);
 			}
