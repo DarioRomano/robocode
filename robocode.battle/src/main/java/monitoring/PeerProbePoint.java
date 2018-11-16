@@ -168,7 +168,7 @@ public class PeerProbePoint extends Thread {
 		if (!l.isEmpty()) {
 			double last = (double) l.get(0);
 			double maxDelta = 0;
-			for (int i = 0; i < l.size(); i++) {
+			for (int i = 1; i < l.size(); i++) {
 				if (Math.abs((double) l.get(i) - last) > Math.abs(maxDelta)) {
 					maxDelta = (double) l.get(i) - last;
 				}
