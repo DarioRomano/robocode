@@ -121,7 +121,7 @@ public class PeerProbePoint extends Thread {
 		ProbeData d = new ProbeData("PeerData");
 		d.addKeyValue("Name", name);
 		for(String r:dataClasses.keySet()) {
-			d.addKeyValue(r+"Minaaaaaaaaaaaaaaaaaaaaaaaaaaa", dataClasses.get(r).dataMin);
+			d.addKeyValue(r+"Min", dataClasses.get(r).dataMin);
 			d.addKeyValue(r+"Average", dataClasses.get(r).dataAverage);
 			d.addKeyValue(r+"Max", dataClasses.get(r).dataMax);
 			d.addKeyValue(r+"MaxDelta", dataClasses.get(r).maxDelta);
