@@ -1,14 +1,11 @@
-2018-11-15 16:30:12,356 ERROR [Thread-10] at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.run(MultiSocketTransmitThread.java:99)                     Connection reset by peer: socket write error
-java.net.SocketException: Connection reset by peer: socket write error
-	at java.net.SocketOutputStream.socketWrite0(Native Method)
-	at java.net.SocketOutputStream.socketWrite(Unknown Source)
-	at java.net.SocketOutputStream.write(Unknown Source)
-	at java.io.BufferedOutputStream.flushBuffer(Unknown Source)
-	at java.io.BufferedOutputStream.write(Unknown Source)
-	at java.io.ObjectOutputStream$BlockDataOutputStream.drain(Unknown Source)
-	at java.io.ObjectOutputStream$BlockDataOutputStream.flush(Unknown Source)
-	at java.io.ObjectOutputStream.flush(Unknown Source)
-	at java.io.ObjectOutputStream.close(Unknown Source)
-	at at.jku.mevss.publisher.msocket.MultiSocketTransmitThread.run(MultiSocketTransmitThread.java:93)
-2018-11-15 16:30:13,356 ERROR [Battle Thread] at.jku.mevss.eventpublisher.core.negotiator.NegotiatorClient.runNegotiation(NegotiatorClient.java:120)              Cant connect to negotiation server @ null:3333 setting connection timeout to 100
------------------------------------------------------------------------
+2018-11-16 10:03:46,164 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:03:46,164 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
+2018-11-16 10:03:46,165 INFO  [Battle Thread] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:04:28,855 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:04:28,856 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
+2018-11-16 10:06:28,857 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:06:28,858 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
+2018-11-16 10:08:28,859 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:08:28,860 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
+2018-11-16 10:10:28,860 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: simulation.robocode.robot | host: DESKTOP-60NIQRK]
+2018-11-16 10:10:28,861 INFO  [Registry-KeepAlive-Thread-0] at.jku.mevss.eventpublisher.core.registry.RegistryClient2.propagate(RegistryClient2.java:118)                       Registered id: PROBE-GROUP [id: Robocode | host: DESKTOP-60NIQRK]
