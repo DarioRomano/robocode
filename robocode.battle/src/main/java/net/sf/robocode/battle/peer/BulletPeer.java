@@ -140,7 +140,7 @@ public class BulletPeer {
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == owner || otherRobot.isDead())
 					&& otherRobot.getBoundingBox().intersectsLine(boundingLine)) {
-
+				otherRobot.getProbe().sendData("RobotHit");
 				state = BulletState.HIT_VICTIM;
 				frame = 0;
 				victim = otherRobot;

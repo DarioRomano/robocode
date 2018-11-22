@@ -113,6 +113,7 @@ public class PeerProbePoint extends Thread {
 	}
 
 	public void sendData(String eventType) {
+		if(eventType=="RobotData")
 		calculatePeriodicData();
 
 		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
@@ -190,5 +191,4 @@ public class PeerProbePoint extends Thread {
 		rdata.dataAverage = rdata.data.stream().mapToDouble(v -> v).average().getAsDouble();
 		rdata.maxDelta = getMaxDelta((List<Double>) rdata.data);
 	}
-
 }

@@ -45,6 +45,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import monitoring.PeerProbePoint;
+
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -65,6 +67,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public static int count;
 	private int id;
+	private PeerProbePoint probe;
 
 	public static final int
 			WIDTH = 36,
@@ -884,6 +887,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (newBullet != null) {
 			// newBullet.update(robots, bullets);
 			battle.addBullet(newBullet);
+			probe.sendData("BulletFired");
 		}
 	}
 
@@ -1069,6 +1073,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		if (inCollision) {
 			setState(RobotState.HIT_ROBOT);
+			probe.sendData("RobotCollision");
 		}
 	}
 
@@ -1148,6 +1153,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			velocity = 0;
 
 			setState(RobotState.HIT_WALL);
+			probe.sendData("WallCollision");
 		}
 	}
 
@@ -1773,5 +1779,13 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public String toString() {
 		return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
 				+ (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
+	}
+
+	public PeerProbePoint getProbe() {
+		return probe;
+	}
+
+	public void setProbe(PeerProbePoint probe) {
+		this.probe = probe;
 	}
 }

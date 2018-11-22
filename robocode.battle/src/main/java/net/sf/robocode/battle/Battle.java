@@ -30,6 +30,7 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.RobotState;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -96,7 +97,8 @@ public final class Battle extends BaseBattle {
 	private IProbePoint iprobePoint;
 	private Map<Integer,PeerProbePoint> robotProbes;
 	private final boolean ENABLE_RANDOM_TELEPORTATION=true;
-	private final double RANDOM_TELEPORTATION_CHANCE=0.002;
+	private final double RANDOM_TELEPORTATION_CHANCE=0.0;
+	private int turnsSinceLastSend=0;
 	
 	// Initial robot setups (if any)
 	private RobotSetup[] initialRobotSetups;
@@ -248,10 +250,12 @@ public final class Battle extends BaseBattle {
 		
 		for(RobotPeer e:robots) {
 			try {
-				robotProbes.put((Integer)e.getId(),new PeerProbePoint(e.getName(),
+				PeerProbePoint curr =new PeerProbePoint(e.getName(),
 						PublishService.getInstance().createProbePoint(e.getName(),
 						"simulation.robocode.robot", "simulation.robocode.robot@"+e.getName(),
-						PeerProbePoint.class.getName())));
+						PeerProbePoint.class.getName()));
+				robotProbes.put((Integer)e.getId(),curr);
+				e.setProbe(curr);
 			} catch (Exception a) {
 				a.printStackTrace();
 			}
@@ -501,6 +505,16 @@ public final class Battle extends BaseBattle {
 
 		handleDeadRobots();
 		
+		if(!this.deathRobots.isEmpty()) {
+			if(Math.random()<0.1) {
+				RobotPeer a =deathRobots.remove(0);
+				a.energy=100;
+				a.setState(RobotState.ACTIVE);
+				robots.add(a);
+			}
+		}
+			
+		
 		for(int i=0;i<robots.size();i++) {
 			RobotPeer n=robots.get(i);
 			PeerProbePoint currPoint=this.robotProbes.get(n.getId());
@@ -521,8 +535,13 @@ public final class Battle extends BaseBattle {
 			currPoint.setRadarheading(n.radarHeading);
 		}
 		
+		this.turnsSinceLastSend++;
+		for(int i=0;i<robotProbes.size();i++) {	
+			robotProbes.get(i).setTPS(turnsSinceLastSend);
+		}
 		int mod=(getTPS()==0) ? 1:getTPS();
-		if(this.getTotalTurns()%mod==0 && !isAborted) {
+		if(this.getTotalTurns()%mod*2==0 && !isAborted) {
+			
 			probePoint.setPaused(isPaused);
 			probePoint.setBattleTime(this.currentTime);
 			probePoint.setRoundNumber(this.getRoundNum());
@@ -533,12 +552,10 @@ public final class Battle extends BaseBattle {
 			for(int i=0;i<robotProbes.size();i++) {
 				if(!robotProbes.get(i).isDead())
 				robotProbes.get(i).sendData("RobotData");	//robotProbes.get(i).getRoboName());
-				
 			}
+			turnsSinceLastSend=0;
 		}	
-		for(int i=0;i<robotProbes.size();i++) {	
-			robotProbes.get(i).setTPS(getTPS());
-		}
+		
 
 		if (isAborted() || oneTeamRemaining()) {
 			shutdownTurn();
