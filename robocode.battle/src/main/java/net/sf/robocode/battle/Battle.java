@@ -504,15 +504,15 @@ public final class Battle extends BaseBattle {
 		updateRobots();
 
 		handleDeadRobots();
-		
-		if(!this.deathRobots.isEmpty()) {
-			if(Math.random()<0.1) {
-				RobotPeer a =deathRobots.remove(0);
-				a.energy=100;
-				a.setState(RobotState.ACTIVE);
-				robots.add(a);
-			}
-		}
+//		
+//		if(!this.deathRobots.isEmpty()) {
+//			if(Math.random()<0.1) {
+//				RobotPeer a =deathRobots.remove(0);
+//				a.energy=100;
+//				a.setState(RobotState.ACTIVE);
+//				robots.add(a);
+//			}
+//		}
 			
 		
 		for(int i=0;i<robots.size();i++) {
