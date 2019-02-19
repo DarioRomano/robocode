@@ -27,7 +27,7 @@ public class PeerProbePoint extends Thread {
 		public RobotDataClass() {
 			data = new LinkedList<T>();
 		}
-		
+
 		private void add(T d) {
 			data.add(d);
 		}
@@ -35,7 +35,7 @@ public class PeerProbePoint extends Thread {
 
 	private int TPS;
 	private String name;
-	private HashMap<String,RobotDataClass<Double>> dataClasses;
+	private HashMap<String, RobotDataClass<Double>> dataClasses;
 
 	private boolean alive = true;
 	private boolean disabled = false;
@@ -45,15 +45,15 @@ public class PeerProbePoint extends Thread {
 	public PeerProbePoint(String name, IProbePoint i) {
 		probePoint = i;
 		this.name = name;
-		dataClasses = new HashMap<String,RobotDataClass<Double>>();
-		dataClasses.put("energy",new RobotDataClass<Double>());
-		dataClasses.put("gunHeat",new RobotDataClass<Double>());
-		dataClasses.put("velocity",new RobotDataClass<Double>());
-		dataClasses.put("xPosition",new RobotDataClass<Double>());
-		dataClasses.put("yPosition",new RobotDataClass<Double>());
-		dataClasses.put("robotHeading",new RobotDataClass<Double>());
-		dataClasses.put("gunHeading",new RobotDataClass<Double>());
-		dataClasses.put("radarHeading",new RobotDataClass<Double>());
+		dataClasses = new HashMap<String, RobotDataClass<Double>>();
+		dataClasses.put("energy", new RobotDataClass<Double>());
+		dataClasses.put("gunHeat", new RobotDataClass<Double>());
+		dataClasses.put("velocity", new RobotDataClass<Double>());
+		dataClasses.put("xPosition", new RobotDataClass<Double>());
+		dataClasses.put("yPosition", new RobotDataClass<Double>());
+		dataClasses.put("robotHeading", new RobotDataClass<Double>());
+		dataClasses.put("gunHeading", new RobotDataClass<Double>());
+		dataClasses.put("radarHeading", new RobotDataClass<Double>());
 	}
 
 	public String getRoboName() {
@@ -63,11 +63,11 @@ public class PeerProbePoint extends Thread {
 	public boolean isDead() {
 		return !alive;
 	}
-	
+
 	public void setRobotHeading(double rheading) {
 		dataClasses.get("robotHeading").add(rheading);
 	}
-	
+
 	public void setGunHeading(double gheading) {
 		dataClasses.get("gunHeading").add(gheading);
 	}
@@ -112,39 +112,151 @@ public class PeerProbePoint extends Thread {
 		this.alive = alive2;
 	}
 
-	public void sendData(String eventType) {
-		if(eventType=="RobotData")
-		calculatePeriodicData();
-
+	public void sendBulletMissed(String owner, double heading, double power) {
 		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
-				eventType);
-
-		ProbeData d = new ProbeData("PeerData");
-		d.addKeyValue("Name", name);
-		for(String r:dataClasses.keySet()) {
-			d.addKeyValue(r+"Min", dataClasses.get(r).dataMin);
-			d.addKeyValue(r+"Average", dataClasses.get(r).dataAverage);
-			d.addKeyValue(r+"Max", dataClasses.get(r).dataMax);
-			d.addKeyValue(r+"MaxDelta", dataClasses.get(r).maxDelta);
-		}
-		d.addKeyValue("isAlive", Boolean.toString(alive));
-
-		ProbeData b = new ProbeData();
-		for(String r:dataClasses.keySet()) {
-			b.newJsonItem(r, new Gson().toJson(dataClasses.get(r)));
-		}
-
+				"BulletMissed");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("BulletOwner", owner);
+		d.addKeyValue("BulletHeading", heading);
+		d.addKeyValue("BulletPower", power);
 		for (ProbeDataItem item : d.getItems()) {
 			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
 					item.getName());
 			ob.addData(data);
 		}
-		for (ProbeDataItem item : b.getItems()) {
+		probePoint.sendData(ob);
+	}
+
+	public void sendBulletHit(String owner, String victim, double heading, double power, double x, double y) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"BulletHitRobot");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("BulletOwner", owner);
+		d.addKeyValue("BulletVictim", victim);
+		d.addKeyValue("Heading", heading);
+		d.addKeyValue("Power", power);
+		d.addKeyValue("xPosition", x);
+		d.addKeyValue("yPosition", y);
+		for (ProbeDataItem item : d.getItems()) {
 			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
 					item.getName());
 			ob.addData(data);
 		}
+		probePoint.sendData(ob);
+	}
 
+	public void sendHitByBullet(String owner, String victim, double heading, double power, double x, double y) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"BulletHitRobot");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("BulletOwner", owner);
+		d.addKeyValue("BulletVictim", victim);
+		d.addKeyValue("Heading", heading);
+		d.addKeyValue("Power", power);
+		d.addKeyValue("xPosition", x);
+		d.addKeyValue("yPosition", y);
+		for (ProbeDataItem item : d.getItems()) {
+			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+					item.getName());
+			ob.addData(data);
+		}
+		probePoint.sendData(ob);
+	}
+
+	public void sendScannedRobot(String owner, String scanned, double scanHeading, double enemyHeading,
+			double enemyEnergy, double enemyVelocity) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"EnemyScanned");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("Scanner", owner);
+		d.addKeyValue("ScannedRobot", scanned);
+		d.addKeyValue("ScanHeading", scanHeading);
+		d.addKeyValue("EnemyHeading", enemyHeading);
+		d.addKeyValue("EnemyEnergy", enemyEnergy);
+		d.addKeyValue("EnemyVelocity", enemyVelocity);
+		for (ProbeDataItem item : d.getItems()) {
+			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+					item.getName());
+			ob.addData(data);
+		}
+		
+		probePoint.sendData(ob);
+	}
+
+	public void sendBulletCollision(String owner1, String owner2) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"BulletHitBullet");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("Robot_firstBullet", owner1);
+		d.addKeyValue("Robot_secondBullet", owner2);
+		probePoint.sendData(ob);
+	}
+	
+	public void sendBulletFired(String owner, double heading, double power, double x, double y) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"BulletFired");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("BulletOwner", owner);
+		d.addKeyValue("Heading", heading);
+		d.addKeyValue("Power", power);
+		d.addKeyValue("xPosition", x);
+		d.addKeyValue("yPosition", y);
+		for (ProbeDataItem item : d.getItems()) {
+			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+					item.getName());
+			ob.addData(data);
+		}
+		probePoint.sendData(ob);
+	}
+	
+	public void sendRobotCollision(String robot, String otherRobot, boolean atFault) {
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				"RobotCollision");
+		ProbeData d = new ProbeData("EventInfo");
+		d.addKeyValue("ThisRobot", robot);
+		d.addKeyValue("OtherRobot", otherRobot);
+		d.addKeyValue("AtFault", String.valueOf(atFault));
+		for (ProbeDataItem item : d.getItems()) {
+			TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+					item.getName());
+			ob.addData(data);
+		}
+		probePoint.sendData(ob);
+	}
+
+	public void sendData(String eventType) {
+		if (eventType.equals("RobotData"))
+			calculatePeriodicData();
+
+		TransmittableEventObject ob = TransmittableObjectFactory.createEventObject(PreciseTimestamp.create(),
+				eventType);
+		if (eventType.equals("RobotData")) {
+			ProbeData d = new ProbeData("PeerData");
+			d.addKeyValue("Name", name);
+			for (String r : dataClasses.keySet()) {
+				d.addKeyValue(r + "Min", dataClasses.get(r).dataMin);
+				d.addKeyValue(r + "Average", dataClasses.get(r).dataAverage);
+				d.addKeyValue(r + "Max", dataClasses.get(r).dataMax);
+				d.addKeyValue(r + "MaxDelta", dataClasses.get(r).maxDelta);
+			}
+			d.addKeyValue("isAlive", Boolean.toString(alive));
+
+			ProbeData b = new ProbeData();
+			for (String r : dataClasses.keySet()) {
+				b.newJsonItem(r, new Gson().toJson(dataClasses.get(r)));
+			}
+
+			for (ProbeDataItem item : d.getItems()) {
+				TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+						item.getName());
+				ob.addData(data);
+			}
+			for (ProbeDataItem item : b.getItems()) {
+				TransmittableEventDataObject data = TransmittableObjectFactory.createEventData(item.getData(),
+						item.getName());
+				ob.addData(data);
+			}
+		}
 		probePoint.sendData(ob);
 	}
 
@@ -153,7 +265,7 @@ public class PeerProbePoint extends Thread {
 	 * contain all the data for the individual turns
 	 */
 	private void calculatePeriodicData() {
-		for(String r:dataClasses.keySet()) {
+		for (String r : dataClasses.keySet()) {
 			calculateStatisticValues(dataClasses.get(r));
 		}
 	}
@@ -161,10 +273,10 @@ public class PeerProbePoint extends Thread {
 	/**
 	 * 
 	 * @param l list with collected values
-	 * @return	the maximum change between 2 following values
+	 * @return the maximum change between 2 following values
 	 */
 	private double getMaxDelta(List l) {
-		//TODO check what happens with beginning values
+		// TODO check what happens with beginning values
 		if (!l.isEmpty()) {
 			double last = (double) l.get(0);
 			double maxDelta = 0;
@@ -179,7 +291,7 @@ public class PeerProbePoint extends Thread {
 			return 0;
 		}
 	}
-	
+
 	private void calculateStatisticValues(RobotDataClass<Double> rdata) {
 		while (rdata.data.size() > TPS) {
 			rdata.data.poll();

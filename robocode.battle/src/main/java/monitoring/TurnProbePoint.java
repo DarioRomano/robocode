@@ -18,6 +18,7 @@ import at.jku.mevss.util.utils.PreciseTimestamp;
 public class TurnProbePoint extends Thread {
 	private IProbePoint probePoint;
 	private int robotsCount;
+	private int deadRobots;
 	private int totalTurns;
 	private int TPS;
 	private boolean running;
@@ -66,6 +67,14 @@ public class TurnProbePoint extends Thread {
 	public void setTotalTurns(int total) {
 		totalTurns = total;
 	}
+	
+	public void setRobotCount(int robots) {
+		this.robotsCount=robots;
+	}
+	
+	public void setDeadRobotsCount(int dead) {
+		this.deadRobots=dead;
+	}
 
 	public void setTPS(int tps) {
 		TPS = tps;
@@ -102,7 +111,8 @@ public class TurnProbePoint extends Thread {
 
 		ProbeData d = new ProbeData("Battle");
 		d.addKeyValue("maxBullets", maxBullets);
-		d.addKeyValue("robotCount", robotsCount);
+		d.addKeyValue("aliveRobotCount", robotsCount);
+		d.addKeyValue("deadRobotCount", deadRobots);
 		d.addKeyValue("turnDelta", totalTurns - lastTimeTurns);
 		d.addKeyValue("turnsPerSecond", TPS);
 		d.addKeyValue("battleNumber", roundNumber);

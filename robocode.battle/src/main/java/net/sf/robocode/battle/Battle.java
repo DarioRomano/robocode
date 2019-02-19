@@ -540,11 +540,13 @@ public final class Battle extends BaseBattle {
 			robotProbes.get(i).setTPS(turnsSinceLastSend);
 		}
 		int mod=(getTPS()==0) ? 1:getTPS();
-		if(this.getTotalTurns()%mod*2==0 && !isAborted) {
+		if(this.getTotalTurns()%(mod*2)==0 && !isAborted) {
 			
 			probePoint.setPaused(isPaused);
 			probePoint.setBattleTime(this.currentTime);
 			probePoint.setRoundNumber(this.getRoundNum());
+			probePoint.setRobotCount(robots.size());
+			probePoint.setDeadRobotsCount(deathRobots.size());
 			probePoint.setTPS(this.getTPS());
 			probePoint.setTotalTurns(this.totalTurns);
 			probePoint.setCurrentBulletsCount(this.bullets.size());

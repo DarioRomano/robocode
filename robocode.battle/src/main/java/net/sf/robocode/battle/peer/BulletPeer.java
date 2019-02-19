@@ -93,7 +93,7 @@ public class BulletPeer {
 				b.frame = 0;
 				b.x = b.lastX;
 				b.y = b.lastY;
-
+				this.owner.getProbe().sendBulletCollision(owner.getName(), b.getOwner().getName());
 				// Bugfix #366
 				owner.addEvent(new BulletHitBulletEvent(createBullet(false), b.createBullet(true)));
 				b.owner.addEvent(new BulletHitBulletEvent(b.createBullet(false), createBullet(true)));
@@ -140,7 +140,6 @@ public class BulletPeer {
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == owner || otherRobot.isDead())
 					&& otherRobot.getBoundingBox().intersectsLine(boundingLine)) {
-				otherRobot.getProbe().sendData("RobotHit");
 				state = BulletState.HIT_VICTIM;
 				frame = 0;
 				victim = otherRobot;
@@ -186,7 +185,9 @@ public class BulletPeer {
 				if (!victim.isSentryRobot()) {
 					owner.updateEnergy(Rules.getBulletHitBonus(power));
 				}
-
+				
+				owner.getProbe().sendBulletHit(owner.getName(), victim.getName(), heading, power, x, y);
+				victim.getProbe().sendHitByBullet(owner.getName(), victim.getName(), heading, power, x, y);
 				otherRobot.addEvent(
 						new HitByBulletEvent(
 								robocode.util.Utils.normalRelativeAngle(heading + Math.PI - otherRobot.getBodyHeading()),
@@ -222,6 +223,8 @@ public class BulletPeer {
 			state = BulletState.HIT_WALL;
 			frame = 0;
 			owner.addEvent(new BulletMissedEvent(createBullet(false))); // Bugfix #366
+			owner.getProbe().sendBulletMissed(owner.getName(),heading,power);
+			
 		}
 	}
 
